@@ -13,11 +13,16 @@
   git add <file name>
   git add *
 ```
-4. 스테이징 영역의 파일을 로컬저장소에 저장
+4. 파일 트래킹 삭제
+```
+  git rm <file name>
+```
+5. 스테이징 영역의 파일을 로컬저장소에 저장
 ```
   git commit
+  git commit -m "commit message"
 ```
-5. 커밋 로그 확인
+6. 커밋 로그 확인
 ```
 git log
 ```
