@@ -26,3 +26,10 @@
 ```
 git log
 ```
+
+* * *
+7. 리포지토리 연결
+```
+  git remote [alias] [url]
+  git remote -v
+```
