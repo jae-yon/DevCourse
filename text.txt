@@ -1,3 +1,0 @@
-git and github default branch name is main(master)
-
-created feature(login, select-product) branch
