@@ -1,5 +1,3 @@
-this is text file.
+git and github default branch name is main(master)
 
-created test branch!
-
-merged and deleted test branch!!
+created feature(login, select-product) branch
