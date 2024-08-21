@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title> Programmers Devcourse </title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div>
+    <h1>LogIn</h1>
+    <form>
+      <p>ID</p>
+      <input class="login_inputs" id="login_id" type="text" autocomplete="off">
+      <p>PW</p>
+      <input class="login_inputs" id="login_pw"type="password" >
+      <!-- submit button -->
+      <button id="login_btn" type="submit" onclick="myFunction()">LogIn</button>
+    </form>
+  </div>
+</body>
+  <script>
+    /* 나만의 함수 만들고, 버튼 클릭하면 호출하기*/
+    const myFunction = () => {
+      alert(document.getElementById("login_id").value);
+    }
+  </script>
+</html>
