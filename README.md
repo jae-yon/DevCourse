@@ -1,4 +1,4 @@
-# Git Command
+# 깃 & 깃허브 용어 정리
 
 1. 저장소 생성
 ```
@@ -13,27 +13,8 @@
   git add <file name>
   git add *
 ```
-4. 파일 트래킹 삭제
-```
-  git rm <file name>
-```
 5. 스테이징 영역의 파일을 로컬저장소에 저장
 ```
   git commit
   git commit -m "commit message"
-```
-6. 커밋 로그 확인
-```
-git log
-```
-
-* * *
-7. 리포지토리 연결
-```
-  git remote [alias] [url]
-```
-
-8. 리포지토리 클론
-```
-  git clone [url]
 ```
