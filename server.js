@@ -6,17 +6,13 @@ const url = require('url');
 const port = 80;
 
 // server.js로 실행하지 않고 index.js로부터 실행
-function server(route) {
+function start(route, handle) {
   function onRequest(request, response) {
     // Path: 도메인 뒤에 오는 웹사이트 내의 특정 페이지나 자원의 위치
     let path = url.parse(request.url).pathname;
-    route(path);
-    // 서버가 실행되었을 때의 결과
-    response.writeHead(200, {'Content-Type' : 'text/html'}); // html > head
-    response.write('Hello World'); // html > body
-    response.end();
+    route(path, handle, response);
   }
   http.createServer(onRequest).listen(port, console.log('Server is running on localhost:' + port));  
 }
 // 함수 외부 사용 선언
-exports.server = server;
+exports.start = start;
