@@ -1,4 +1,12 @@
+const mariadb = require('./db/connect/mariadb');
+
 function main(response) {
+  
+  // DB 호출
+  mariadb.query("SELECT * FROM product", function(err, rows) {
+    console.log(rows);
+  });
+
   response.writeHead(200, {'Content-Type' : 'text/html; charset=utf-8'}); // html > head
   response.write('김재영'); // html > body
   response.end();
