@@ -10,7 +10,10 @@ function start(route, handle) {
   function onRequest(request, response) {
     // Path: 도메인 뒤에 오는 웹사이트 내의 특정 페이지나 자원의 위치
     let path = url.parse(request.url).pathname;
-    route(path, handle, response);
+    // url의 쿼리 파라미터를 변수에 전달
+    let queryData = url.parse(request.url, true).query;
+
+    route(path, handle, response, queryData.productID);
   }
   http.createServer(onRequest).listen(port, console.log('Server is running on localhost:' + port));  
 }
