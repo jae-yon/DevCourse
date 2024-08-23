@@ -1,4 +1,8 @@
+const fs = require('fs');
 const mariadb = require('./db/connect/mariadb');
+
+// HTML 페이지 변수
+const main_page = fs.readFileSync('./main.html', 'utf-8');
 
 function main(response) {
   
@@ -8,8 +12,35 @@ function main(response) {
   });
 
   response.writeHead(200, {'Content-Type' : 'text/html; charset=utf-8'}); // html > head
-  response.write('김재영'); // html > body
+  response.write(main_page); // html > body
   response.end();
+}
+
+function redRacket(response) {
+  // 이미지 파일 호출
+  fs.readFile('./img/redRacket.png', function(err, data) {
+      response.writeHead(200, {'Content-Type' : 'text/html'});
+      response.write(data);
+      response.end(); 
+  })
+}
+
+function blueRacket(response) {
+  // 이미지 파일 호출
+  fs.readFile('./img/blueRacket.png', function(err, data) {
+      response.writeHead(200, {'Content-Type' : 'text/html'});
+      response.write(data);
+      response.end(); 
+  })
+}
+
+function blackRacket(response) {
+  // 이미지 파일 호출
+  fs.readFile('./img/blackRacket.png', function(err, data) {
+      response.writeHead(200, {'Content-Type' : 'text/html'});
+      response.write(data);
+      response.end(); 
+  })
 }
 
 function login(response) {
@@ -28,6 +59,10 @@ let handle = {}; // key: value
 
 handle['/'] = main;
 handle['/login'] = login;
-// handle['/favicon.ico'] = favicon;
+
+/* image directory */
+handle['/img/redRacket.png'] = redRacket;
+handle['/img/blueRacket.png'] = blueRacket;
+handle['/img/blackRacket.png'] = blackRacket;
 
 exports.handle = handle;
