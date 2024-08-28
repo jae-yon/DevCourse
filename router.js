@@ -1,6 +1,6 @@
-function route(path, handle, response, productID) {
+function route(path, handle, response, id) {
 	if (typeof handle[path] === 'function') {
-		handle[path](response, productID);
+		handle[path](response, id);
 	} else {
 		// 통신 상태 코드 (http status code)
 		// 200: 전송 신공

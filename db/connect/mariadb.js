@@ -1,4 +1,4 @@
-const mariadb = require('mysql2');
+const mariadb = require('mysql');
 
 // mysql method
 const conn = mariadb.createConnection(
@@ -9,7 +9,7 @@ const conn = mariadb.createConnection(
     port: 3306,
     user: 'root',
     password: 'root',
-    database: 'Tennis'
+    database: 'climbing'
   }
 );
 

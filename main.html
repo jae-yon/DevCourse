@@ -1,63 +1,39 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title> Main </title>
-        <style>
-            h1 {
-                text-align: center;
-            }
-
-            #txt_welcome {
-                text-align: center; 
-                margin-bottom: 50px;
-            }
-
-            .card {
-                text-align: center;
-            }
-
-            .card_title {
-                font-size: 20px;
-            }
-
-            .card_button {
-                font-size: 25px;
-                width: 150px;
-                height: 30px;
-            }
-
-            .card_img {
-                width: 300px;
-                height: 300px;
-            }
-        </style>
-    </head>
-    <body>
-        <h1>Tennis market</h1>
-        <div id="txt_welcome">
-            Welcome to Tennis market! <br>
-            Enjoy your shopping.
-            <br>
-            <br>
-            <a href="./orderlist"> order list </a>
-        </div>
-        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr;">
-            <div class="card">
-                <img class="card_img" src="./img/redRacket.png">
-                <p class="card_title"> Red Racket </p>
-                <input class="card_button" type="button" value="order" onclick="location.href='/order?productID=1'">
-            </div>
-            <div class="card">
-                <img class="card_img" src="./img/blueRacket.png">
-                <p class="card_title"> Blue Racket </p>
-                <input class="card_button" type="button" value="order" onclick="alert(2);">
-            </div>
-            <div class="card">
-                <img class="card_img" src="./img/blackRacket.png">
-                <p class="card_title"> Black Racket </p>
-                <input class="card_button" type="button" value="order" onclick="alert(3);">
-            </div>
-        </div>
-    </body>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Main</title>
+  <link rel="stylesheet" href="css/index.css">
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+  <!-- header -->
+  <div class="header">
+    <p class="title">Climbing is Super Awesome!</p>
+    <div class="nav">
+      <a href="#">Home</a>
+      <a href="/order">OrderList</a>
+      <!-- <a href="login.html">로그인</a> -->
+    </div>
+  </div>
+  <!-- product -->
+  <div class="card_grid">
+      <div class="card">
+          <img class="card_img" src="./img/LA_SPORTIVA_FUTURA.jpg">
+          <p class="card_title">LA SPORTIVA FUTURA</p>
+          <button type="button" onclick="location.href='/order?id=1'">ORDER</button>
+      </div>
+      <div class="card">
+        <img class="card_img" src="./img/MADROCK_DRONE_2.0.jpg">
+        <p class="card_title">MADROCK DRONE 2.0</p>
+        <button type="button" onclick="location.href='/order?id=2'">ORDER</button>
+      </div>
+      <div class="card">
+        <img class="card_img" src="./img/SCARPA_DRAGO_LV.jpg">
+        <p class="card_title">SCARPA DRAGO LV</p>
+        <button type="button" onclick="location.href='/order?id=3'">ORDER</button>
+      </div>
+  </div>
+</body>
 </html>

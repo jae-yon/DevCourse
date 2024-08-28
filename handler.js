@@ -3,82 +3,95 @@ const fs = require('fs');
 
 const mariadb = require('./db/connect/mariadb');
 
-// HTML 페이지 변수
-const main_page = fs.readFileSync('./main.html', 'utf-8');
-// const orderlist_page = fs.readFileSync('./orderlist.html', 'utf-8');
-
 /* main.html */
-
-function main(response) {
-  // DB 호출
-  mariadb.query("SELECT * FROM product", function(err, rows) {
-    console.log(rows);
+const main = (response) => {
+  mariadb.query("SELECT * FROM shoes", function(err, res){
+    console.log(res);
   });
-
-  response.writeHead(200, {'Content-Type' : 'text/html; charset=utf-8'}); // html > head
-  response.write(main_page); // html > body
+  response.writeHead(200, {"Content-Type": "text/html"});
+  response.write(fs.readFileSync('./main.html', 'utf-8'));
+  response.end();
+}
+/* order.html */
+const order = (response, id) => {
+  if (id != undefined) {
+    mariadb.query("INSERT INTO orderlist VALUES (" + id + ", '" + new Date().toLocaleDateString() + "');", function(err, res) {
+      // console.log(res);
+    });
+  }
+  response.writeHead(200, {"Content-Type": "text/html"});
+  mariadb.query("SELECT orderlist.order_date, shoes.shoes, shoes.price FROM orderlist JOIN shoes ON orderlist.product_id = shoes.id", function(err, res) {
+    response.write(fs.readFileSync('./order.html', 'utf-8'));
+    res.forEach(element => {
+      response.write("<tr>"
+                    +"  <td>"+element.order_date+"</td>"
+                    +"  <td>"+element.shoes+"</td>"
+                    +"  <td>"+element.price+"</td>"
+                    +"</tr>");
+    });
+    response.write(
+      "       </tbody>"
+      +"    </table>"
+      +"  </div>"
+      +"</body>"
+      +"</html>"
+    );
+    response.end();
+  });
+}
+/* main.css */
+const cssMain = (response) => {
+  response.writeHead(200, {"Content-Type": "text/css"});
+  response.write(fs.readFileSync('./css/main.css', 'utf-8'));
+  response.end();
+}
+/* index.css */
+const cssIndex = (response) => {
+  response.writeHead(200, {"Content-Type": "text/css"});
+  response.write(fs.readFileSync('./css/index.css', 'utf-8'));
+  response.end();
+}
+/* order.css */
+const cssOrder = (response) => {
+  response.writeHead(200, {"Content-Type": "text/css"});
+  response.write(fs.readFileSync('./css/order.css', 'utf-8'));
   response.end();
 }
 
-/* order.html */ 
-
-function order(response, productID) {
-  response.writeHead(200, {'Content-Type' : 'text/html'});
-
-  mariadb.query("INSERT INTO orderlist VALUES (" + productID + ", '" + new Date().toLocaleDateString() + "');", function(err, rows) {
-      console.log(rows);
-  })
-
-  response.write('Thank you for your order! <br> you can check the result on the order list page.');
-  response.end(); 
+/* sample images */
+const image_01 = (response) => {
+  fs.readFile('./img/LA_SPORTIVA_FUTURA.jpg', function(err, res) {
+    response.writeHead(200, {'Content-Type' : 'text/html'});
+    response.write(res);
+    response.end(); 
+  });
 }
-
-
-/* image files */ 
-
-function redRacket(response) {
-  // 이미지 파일 호출
-  fs.readFile('./img/redRacket.png', function(err, data) {
+const image_02 = (response) => {
+  fs.readFile('./img/MADROCK_DRONE_2.0.jpg', function(err, res) {
+    response.writeHead(200, {'Content-Type' : 'text/html'});
+    response.write(res);
+    response.end(); 
+  });
+}
+const image_03 = (response) => {
+  fs.readFile('./img/SCARPA_DRAGO_LV.jpg', function(err, res) {
       response.writeHead(200, {'Content-Type' : 'text/html'});
-      response.write(data);
+      response.write(res);
       response.end(); 
-  })
-}
-
-function blueRacket(response) {
-  // 이미지 파일 호출
-  fs.readFile('./img/blueRacket.png', function(err, data) {
-      response.writeHead(200, {'Content-Type' : 'text/html'});
-      response.write(data);
-      response.end(); 
-  })
-}
-
-function blackRacket(response) {
-  // 이미지 파일 호출
-  fs.readFile('./img/blackRacket.png', function(err, data) {
-      response.writeHead(200, {'Content-Type' : 'text/html'});
-      response.write(data);
-      response.end(); 
-  })
-}
-
-
-function login(response) {
-  response.writeHead(200, {'Content-Type' : 'text/html; charset=utf-8'}); // html > head
-  response.write('This is Login Page'); // html > body
-  response.end();
+  });
 }
 
 let handle = {}; // key: value
 
 handle['/'] = main;
 handle['/order'] = order;
-handle['/login'] = login;
+handle['/css/main.css'] = cssMain;
+handle['/css/index.css'] = cssIndex;
+handle['/css/order.css'] = cssOrder;
 
-/* image directory */
-handle['/img/redRacket.png'] = redRacket;
-handle['/img/blueRacket.png'] = blueRacket;
-handle['/img/blackRacket.png'] = blackRacket;
+// image files
+handle['/img/LA_SPORTIVA_FUTURA.jpg'] = image_01;
+handle['/img/MADROCK_DRONE_2.0.jpg'] = image_02;
+handle['/img/SCARPA_DRAGO_LV.jpg'] = image_03;
 
 exports.handle = handle;
