@@ -1,0 +1,49 @@
+{
+  "fruits": [
+      {
+        "name": "apple",
+        "origin": "korea",
+        "price": 1000
+      },
+      {
+        "name": "grape",
+        "origin": "japan",
+        "price": 2000
+      },
+      {
+        "name": "melon",
+        "origin": "china",
+        "price": 2500
+      },
+      {
+        "name": "mango",
+        "origin": "indonesia",
+        "price": 1500
+      },
+      {
+        "name": "lemon",
+        "origin": "india",
+        "price": 1700
+      },
+      {
+        "name": "banana",
+        "origin": "vietnam",
+        "price": 3000
+      },
+      {
+        "name": "orange",
+        "origin": "brazil",
+        "price": 2000
+      },
+      {
+        "name": "cherry",
+        "origin": "chile",
+        "price": 3300
+      },
+      {
+        "name": "durian",
+        "origin": "malaysia",
+        "price": 2600
+      }
+  ]
+}

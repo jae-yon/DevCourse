@@ -2,6 +2,19 @@ const express = require('express')
 const app = express()
 const port = 3000
 
+const fs = require('fs')
+const jsonFile = fs.readFileSync('./db/sample.json', 'utf8')
+const jsonData = JSON.parse(jsonFile)
+
+// 객체 생성
+let db = new Map()
+
+jsonData.fruits.forEach((element, index) => {
+  db.set(index, element)
+});
+
+console.log(db);
+
 app.listen(port, () => {
   console.log(`Server is running on localhost: ${port}`)
 })
@@ -18,21 +31,11 @@ app.get('/:id', (req, res) => {
       message : "there is no value",
     })
   } else {
-    res.json({
-      key : key,
-      name : db.get(key)
-    })
+    info = db.get(key)
+    info['id'] = key
+    res.json(info)
   }
 })
-
-// 객체 생성
-let db = new Map()
-
-db.set(1, 'apple')
-db.set(2, 'grape')
-db.set(3, 'melon')
-db.set(4, 'mango')
-db.set(5, 'lemon')
 
 // app.get('/:test', (req, res) => {
 //   // : => url로 매개변수를 전달해주는 것으로 인식한다.
