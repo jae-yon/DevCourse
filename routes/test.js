@@ -8,7 +8,7 @@ const jsonData = JSON.parse(jsonFile);
 
 let db = new Map()
 // 맵 객체에 JSON데이터 담기
-jsonData.fruits.forEach((element, index) => {
+jsonData.forEach((element, index) => {
   db.set(index, element);
 });
 
@@ -36,9 +36,9 @@ router.post('/', (req, res) => {
   let id = db.size;
   // DB 객체에 받아온 값 저장
   db.set(id, req.body);
-  // 객체 전체 조회
-  console.log(db);
-  // 결과 호출
+  // JSON 형태로 변환 후 파일로 저장
+  fs.writeFileSync('./public/json/fruits.json', JSON.stringify([...db.values()], null, 2));
+  // 응답
   res.json({
     message : db.get(id).name + " is tasty!"
   });
