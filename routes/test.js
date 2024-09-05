@@ -6,42 +6,116 @@ const fs = require('fs');
 const jsonFile = fs.readFileSync('./public/json/fruits.json', 'utf8');
 const jsonData = JSON.parse(jsonFile);
 
-let db = new Map()
+let db = new Map();
 // 맵 객체에 JSON데이터 담기
-jsonData.forEach((element, index) => {
+jsonData.map((element, index) => {
   db.set(index, element);
 });
 
+const save = () => {
+  fs.writeFileSync('./public/json/test.json', JSON.stringify([...db.values()], null, 2));
+}
+
+// GET : 객체 전체 조회
 router.get('/', (req, res) => {
-  // 객체 전체 조회
-  res.json([...db.values()]);
+
+  if (db.size >= 1) {
+
+    let jsonObject = {}
+
+    db.forEach((value, key) => {
+      jsonObject[key] = value;
+    });
+    res.json(jsonObject);
+    // res.json([...db.values()]);
+
+  } else {
+    res.json({ message : "This object's value does not exist." });
+  }
+
 });
 
-// 객체 개별(선택) 조회
+// GET : 객체 개별(선택) 조회
 router.get('/:id', (req, res) => {
-  // 비구조화를 통해 매개변수 값 변수에 선언
+
   let {id} = req.params;
   id = parseInt(id);
-  // 객체 호출
+
   if (db.get(id) == undefined) {
-    res.send("There is no value");
+    res.json({ message : "This value does not exist." });
   } else {
-    let arr = db.get(id);
-    arr['id'] = id;
-    res.json(arr);
+    res.json(db.get(id));
   }
+
 });
 
+// DELETE : 객체 전체 삭제
+router.delete('/', (req, res, next) => {
+
+  if (db.size >= 1) {
+
+    // 전체 삭제
+    db.clear();
+    save();
+    res.json({ message : "success" });
+    
+  } else {
+    res.json({ message : "This object's value does not exist." });
+  }
+
+});
+
+// DELETE : 객체 개별(선택) 삭제
+router.delete('/:id', (req, res) => {
+
+  let {id} = req.params;
+  id = parseInt(id);
+  
+  if (db.get(id) == undefined) {
+    res.json({ message : "This value does not exist." });
+  } else {
+
+    // 선택한 값을 삭제
+    db.delete(id);
+
+    let jsonObject = {}
+    db.forEach((value, key) => {
+      jsonObject[key] = value;
+    });
+    res.json(jsonObject);
+
+    save();
+
+  }
+  
+});
+
+// PUT : 객체 개별(선택) 수정
+router.put('/:id', (req, res) => {
+
+  let {id} = req.params;
+  id = parseInt(id);
+  
+  if (db.get(id) == undefined) {
+    res.json({ message : "This value does not exist." });
+  } else {
+    // 받아온 값 덮어쓰기
+    db.set(id, req.body);
+    save();
+    res.json({ message : `The values of object ${id} have been changed.` });
+  }
+
+});
+
+// POST
 router.post('/', (req, res) => {
+
   let id = db.size;
-  // DB 객체에 받아온 값 저장
   db.set(id, req.body);
-  // JSON 형태로 변환 후 파일로 저장
-  fs.writeFileSync('./public/json/fruits.json', JSON.stringify([...db.values()], null, 2));
+  save();
   // 응답
-  res.json({
-    message : db.get(id).name + " is tasty!"
-  });
+  res.json({ message : `${db.get(id).name} is tasty!` });
+  
 });
 
 module.exports = router;
