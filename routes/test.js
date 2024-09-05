@@ -12,7 +12,7 @@ jsonData.map((element, index) => {
   db.set(index, element);
 });
 
-const save = () => {
+const saveFile = () => {
   fs.writeFileSync('./public/json/test.json', JSON.stringify([...db.values()], null, 2));
 }
 
@@ -50,13 +50,13 @@ router.get('/:id', (req, res) => {
 });
 
 // DELETE : 객체 전체 삭제
-router.delete('/', (req, res, next) => {
+router.delete('/', (req, res) => {
 
   if (db.size >= 1) {
 
     // 전체 삭제
     db.clear();
-    save();
+    saveFile();
     res.json({ message : "success" });
     
   } else {
@@ -84,7 +84,7 @@ router.delete('/:id', (req, res) => {
     });
     res.json(jsonObject);
 
-    save();
+    saveFile();
 
   }
   
@@ -101,7 +101,7 @@ router.put('/:id', (req, res) => {
   } else {
     // 받아온 값 덮어쓰기
     db.set(id, req.body);
-    save();
+    saveFile();
     res.json({ message : `The values of object ${id} have been changed.` });
   }
 
@@ -112,7 +112,7 @@ router.post('/', (req, res) => {
 
   let id = db.size;
   db.set(id, req.body);
-  save();
+  saveFile();
   // 응답
   res.json({ message : `${db.get(id).name} is tasty!` });
   
