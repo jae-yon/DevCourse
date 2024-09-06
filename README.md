@@ -5,12 +5,10 @@
 
 🗒️ [***API PUT&DELETE 노션 기록***](https://jae-yon.notion.site/TIL-18-827c5dcfb1e441a7945ed0a1f7abfb79?pvs=4)
 
-<br>
-<img src="https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=Notion&logoColor=white">
-
 #### 🗂️ 추가&수정 파일 항목
 ```
 │  app.js // test 라우터 연결
+│
 ├─public
 │  └─json
 │        fruits.json // 조회 데이터 테스트 파일
