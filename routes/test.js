@@ -6,11 +6,10 @@ const fs = require('fs');
 const jsonFile = fs.readFileSync('./public/json/fruits.json', 'utf8');
 const jsonData = JSON.parse(jsonFile);
 
-let db = new Map();
 // 맵 객체에 JSON데이터 담기
-jsonData.map((element, index) => {
-  db.set(index, element);
-});
+let db = new Map(Object.entries(jsonData));
+
+// let obj = Object.fromEntries(db)
 
 const saveFile = () => {
   fs.writeFileSync('./public/json/test.json', JSON.stringify([...db.values()], null, 2));
@@ -21,13 +20,15 @@ router.get('/', (req, res) => {
 
   if (db.size >= 1) {
 
+    res.json([...db.values()]);
+
     let jsonObject = {}
 
     db.forEach((value, key) => {
       jsonObject[key] = value;
     });
-    res.json(jsonObject);
-    // res.json([...db.values()]);
+
+    console.log(jsonObject);
 
   } else {
     res.json({ message : "This object's value does not exist." });
