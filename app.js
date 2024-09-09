@@ -6,8 +6,7 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-var helloRouter = require('./routes/hello');
-var testRouter = require('./routes/test');
+var channelsRouter = require('./routes/channels');
 
 var app = express();
 
@@ -23,9 +22,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/test', testRouter);
 app.use('/users', usersRouter);
-app.use('/hello', helloRouter);
+app.use('/channels', channelsRouter);
 
 // 404(URL 오입력) 에러 발생시 에러 해들러로 넘김
 app.use(function(req, res, next) {

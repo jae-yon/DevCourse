@@ -2,6 +2,11 @@ var express = require('express');
 var router = express.Router();
 
 let arr = { "id": "admin", "pw": "admin", "name": "admin" }
+let newArr = new Array();
+newArr = [arr].map((e) => {
+  return {...e, pw: "change", name: "change"}
+})
+console.log(newArr[0])
 
 // let foreachArr = arr.forEach((element, index, array) => {
 // 	console.log(`foreach > element: ${element}, index: ${index}, array: ${array}`)

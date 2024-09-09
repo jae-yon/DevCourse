@@ -18,7 +18,6 @@ router
     } else {
       res.status(400).send("Error")
     }
-    console.log(users)
   })
   // 로그인
   .post('/signin', function(req, res, next){
@@ -66,22 +65,22 @@ router
       user = [user].map((e) => {
         return {...e, pw: req.body.pw, name: req.body.name}
       })
-      users.set(id, user)
+
+      users.set(id, user[0])
       res.json(users.get(id))
     } else {
       res.send(`cannot find the id`)
     }
-
   })
   // 회원 개별(선택) 삭제
   .delete('/:id', function(req, res, next) {
     const {id} = req.params
     // 예외 처리
     if (users.get(id) == undefined) {
-      res.json({ message : "This value does not exist." });
+      res.send(`cannot find the id`)
     } else {
       users.delete(id)
-      res.json(users)
+      res.send(`"${id}" account has been deleted`)
     }
   })
   
