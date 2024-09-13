@@ -6,9 +6,12 @@ var logger = require('morgan');
 var express = require('express');
 var cookieParser = require('cookie-parser');
 
+var mariaDB = require('./db');
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var channelsRouter = require('./routes/channels');
+const connection = require('./db');
 
 var app = express();
 
@@ -41,5 +44,13 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+connection.query(
+  `SELECT * FROM users`,
+  function (err, results, fields) {
+      console.log(results); // results contains rows returned by server
+      console.log(fields); // fields contains extra meta data about results, if available
+  }
+)
 
 module.exports = app;
