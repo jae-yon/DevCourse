@@ -1,8 +1,10 @@
-var createError = require('http-errors');
-var express = require('express');
+// 내장 모듈
 var path = require('path');
-var cookieParser = require('cookie-parser');
+var createError = require('http-errors');
+// 외장 모듈
 var logger = require('morgan');
+var express = require('express');
+var cookieParser = require('cookie-parser');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -10,7 +12,6 @@ var channelsRouter = require('./routes/channels');
 
 var app = express();
 
-// view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
