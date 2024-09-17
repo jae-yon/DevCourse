@@ -6,12 +6,11 @@ var logger = require('morgan');
 var express = require('express');
 var cookieParser = require('cookie-parser');
 
-var mariaDB = require('./db');
-
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var channelsRouter = require('./routes/channels');
 const connection = require('./db');
+
+const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/users');
+const channelsRouter = require('./routes/channels');
 
 var app = express();
 
@@ -46,10 +45,13 @@ app.use(function(err, req, res, next) {
 });
 
 connection.query(
-  `SELECT * FROM users`,
+  `SELECT created_at FROM channels`,
   function (err, results, fields) {
-      console.log(results); // results contains rows returned by server
-      console.log(fields); // fields contains extra meta data about results, if available
+      // results contains rows returned by server
+      console.log(results)
+      
+      // fields contains extra meta data about results, if available
+      // console.log(fields);
   }
 )
 

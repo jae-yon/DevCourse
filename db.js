@@ -7,7 +7,9 @@ const connection = mysql.createConnection({
   port: 3306,
   user: 'root',
   password: 'root',
-  database: 'Youtube'
+  database: 'Youtube',
+  timezone: '+09:00',
+  dateStrings: true
 });
 
 module.exports = connection;

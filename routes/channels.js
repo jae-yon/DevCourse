@@ -12,7 +12,7 @@ jsonData.forEach((e) => {
   channels.set(e.id, e)
 })
 
-console.log(channels)
+// console.log(channels)
 // 채널 찾기
 let findChannel = (id) => {
   return [...channels.values()].find((e) => e.id === id)
