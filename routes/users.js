@@ -1,88 +1,167 @@
 var express = require('express');
 var router = express.Router();
 
-let users = new Map();
+var connection = require('../db');
 
 router
-  // 회원가입
-  .post('/signup', function(req, res, next){
-    // 예외 처리 : 회원 정보 값들이 다 들어왔는지 확인
-    if (req.body.id !== undefined && req.body.pw !== undefined && req.body.name !== undefined) {
-      // 예외 처리 : 중복되는 ID 값인지 확인
-      if ([...users.values()].find((e) => e.id === req.body.id)) {
-        res.send(`"${req.body.id}" is already used`)
-      } else {
-        users.set(req.body.id, req.body)
-        res.send(users.get(req.body.id))
-      }
-    } else {
-      res.status(400).send("Error")
-    }
-  })
-  // 로그인
-  .post('/signin', function(req, res, next){
-    // 예외 처리 : ID와 PW 값들이 다 들어왔는지 확인
-    if (req.body.id !== undefined && req.body.pw !== undefined) {
-      const user = [...users.values()].find((e) => e.id === req.body.id)
-      if (user != undefined && user.pw == req.body.pw) {
-        // ID와 PW가 일치할 때
-        res.send(`welcome "${user.name}"`)
-      } else if (user == undefined) {
-        // ID가 없을 때
-        res.send(`cannot find the id`)
-      } else {
-        // PW가 일치하지 않을 때
-        res.send(`incorrect password`)
-      }
-    } else {
-      res.status(400).send("Error")
-    }
-  })
-  // 회원 조회
-  .get('/', function(req, res, next) {
-    // 예외 처리 : 회원 정보 존재 여부 판단
-    if (users.size != 0) {
-      res.json([...users.values()])
-    } else {
-      res.send(`The "users" value does not exist`)
-    }
-  })
-  // 회원 개별(선택) 조회
-  .get('/:id', function(req, res, next) {
-    const {id} = req.params
-    const user = [...users.values()].find((e) => e.id == id)
-    if (user != undefined) {
-      res.json([user])
-    } else {
-      res.send(`cannot find the id`)
-    }
-  })
-  // 회원 개별(선택) 수정
-  .put('/:id', function(req, res, next) {
-    let {id} = req.params
-    let user = [...users.values()].find((e) => e.id == id)
-    if (user != undefined) {
-      user = [user].map((e) => {
-        return {...e, pw: req.body.pw, name: req.body.name}
-      })
+  // email(req.body)로 조회 & 전체 조회
+  .get('/', function(req, res) {
 
-      users.set(id, user[0])
-      res.json(users.get(id))
+    const {email} = req.body
+
+    if (email) {
+      let sql = `SELECT * FROM users WHERE email = ?`
+      // email 선택 조회
+      connection.query(sql, email,
+        function (err, results) {
+          if (results.length) {
+            res.status(201).json(results[0])
+          } else {
+            res.status(404).json({
+              message : `일치하는 회원정보가 없습니다`
+            })
+          }
+        }
+      )
     } else {
-      res.send(`cannot find the id`)
+      // DB를 담아올 객체
+      let data = new Map()
+      let sql = `SELECT * FROM users`
+      // DB전체 조회
+      connection.query(sql,
+        function (err, results) {
+          results.forEach((e) => {
+            data.set(e.id, e)
+          })
+          // 예외 처리 : 회원 정보 존재 여부 판단
+          if (data.size != 0) {
+            res.status(201).json([...data.values()])
+          } else {
+            res.status(404).json({
+              message : `회원정보가 존재하지 않습니다`
+            })
+          }
+        }
+      )
     }
+
   })
-  // 회원 개별(선택) 삭제
-  .delete('/:id', function(req, res, next) {
+
+  // id(req.params)로 조회
+  .get('/:id', function(req, res) {
+
     const {id} = req.params
-    // 예외 처리
-    if (users.get(id) == undefined) {
-      res.send(`cannot find the id`)
+    let sql = `SELECT * FROM users WHERE id = ${id}`
+    // ID 값으로 DB 선택 조회
+    connection.query(sql,
+      function (err, results) {
+        // DB를 담아올 객체
+        let data = new Map()
+
+        results.forEach((e) => {
+          data.set(e.id, e)
+        })
+        // 예외 처리 : 회원 정보 존재 여부 판단
+        if (data.size != 0) {
+          res.status(201).json([...data.values()])
+        } else {
+          res.status(404).json({
+            message : `일치하는 회원정보가 없습니다`
+          })
+        }
+      }
+    )
+
+  })
+
+  // 회원가입
+  .post('/signup', function(req, res){
+    
+    const {email, name, password, contact} = req.body
+    
+    // 예외 처리 : 회원 정보 값들이 다 들어왔는지 확인
+    if (email == '' || name == '' || password == '') {
+      res.status(404).json({
+        message : `입력받은 회원 정보가 없습니다`
+      })
     } else {
-      users.delete(id)
-      res.send(`"${id}" account has been deleted`)
+      let sql = `SELECT email FROM users WHERE email = ?`
+      connection.query(sql, email,
+        function (err, results) {
+          if (results.length) {
+            res.status(404).json({
+              message : `이미 사용중인 이메일입니다`
+            })
+          } else {
+            sql = `INSERT INTO users (email, name, password, contact) VALUES (?, ?, ?, ?)`
+            connection.query(sql, [email, name, password, contact],
+              function (err, results) {
+                res.status(200).json({
+                  message : `계정등록이 정상적으로 완료되었습니다`
+                })
+              }
+            )
+          }
+        }
+      )
+    }
+
+  })
+
+  // 계정삭제
+  .delete('/', function(req, res) {
+
+    const {email} = req.body
+    let sql = `DELETE FROM users WHERE email = ?`
+    if (email) {
+      connection.query(sql, email,
+        function (err, results) {
+          if (results.affectedRows == 0) {
+            res.status(404).json({
+              message : `일치하는 회원 정보가 없거나, 이미 삭제된 계정입니다`
+            })
+          } else {
+            res.status(200).json({
+              message : `회원 정보가 정상적으로 삭제되었습니다`
+            })
+          }
+        }
+      )
+    } else {
+      res.status(404).json({
+        message : `입력받은 회원 정보가 없습니다`
+      })
+    }
+    
+  })
+
+  // 로그인
+  .post('/signin', function(req, res){
+    
+    const {email, password} = req.body
+
+    if (email == '' || password == '') {
+      res.status(404).json({
+        message : `입력받은 회원 정보가 없습니다`
+      })
+    } else {
+      let sql = `SELECT * FROM users WHERE email = ?`
+      connection.query(sql, email,
+        function (err, results) {
+          let user = results[0]
+
+          if (user && user.password == password) {
+            res.status(201).json({
+              message : `${user.name}님이 로그인되었습니다`
+            })
+          } else {
+            res.status(404).json({
+              message : `회원정보가 일치하지 않습니다`
+            })
+          }
+        }
+      )
     }
   })
-  
 
 module.exports = router;

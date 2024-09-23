@@ -6,8 +6,6 @@ var logger = require('morgan');
 var express = require('express');
 var cookieParser = require('cookie-parser');
 
-const connection = require('./db');
-
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const channelsRouter = require('./routes/channels');
@@ -43,16 +41,5 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
-
-connection.query(
-  `SELECT created_at FROM channels`,
-  function (err, results, fields) {
-      // results contains rows returned by server
-      console.log(results)
-      
-      // fields contains extra meta data about results, if available
-      // console.log(fields);
-  }
-)
 
 module.exports = app;
