@@ -1,7 +1,8 @@
 var express = require('express');
 var router = express.Router();
 
-var connection = require('../db');
+const connection = require('../db');
+const {body, validationResult} = require('express-validator')
 
 router
   // email(req.body)로 조회 & 전체 조회
@@ -75,7 +76,7 @@ router
   })
 
   // 회원가입
-  .post('/signup', function(req, res){
+  .post('/signup', function(req, res) {
     
     const {email, name, password, contact} = req.body
     
