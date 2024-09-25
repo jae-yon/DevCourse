@@ -1,22 +1,29 @@
 var express = require('express');
 var router = express.Router();
 
-const connection = require('../db');
-const {body, param, validationResult} = require('express-validator');
+var connection = require('../db');
+
+var jwt = require('jsonwebtoken');
+// create token
+var token = jwt.sign({ name: 'minsukim', location: 'seoul' }, 'mysecretkey');
+
+console.log(token);
+
+var {body, param, validationResult} = require('express-validator');
+
+const validate = (req, res, next) => {
+  const err = validationResult(req)
+  if (err.isEmpty()) {
+    return next()
+  } else {
+    return res.status(400).json({message : err.array()})
+  }
+}
 
 const notFound = (res) => {
   res.status(404).json({
     message : `일치하는 정보를 찾을 수 없습니다`
   })
-}
-
-const validate = (req, res, next) => {
-  const err = validationResult(req)
-  if (!err.isEmpty()) {
-    return res.status(400).json({message : err.array()})
-  } else {
-    return next()
-  }
 }
 
 router
@@ -83,6 +90,10 @@ router
       const sql = `DELETE FROM users WHERE email = ?`
 
       connection.query(sql, email, function (err, results) {
+        if (err) {
+          return res.status(400).send(err)
+        }
+
         if (results.affectedRows == 0) {
           notFound(res)
         } else {
