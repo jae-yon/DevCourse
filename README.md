@@ -1,63 +1,85 @@
 ## 🤖Node.JS + Express 기능 구현 테스트 (유튜브 클론 코딩)
 <img src="https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E"><img src="https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white"><img src="https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB">
 
-🗒️ [***유저 API 설계 노션 기록***](https://jae-yon.notion.site/TIL-19-9f15b2feea43472fbc6171ddb2490314?pvs=4)
+🗒️ <span style="background-color:#fff5b1"> [***DB 설계 노션 기록***](https://jae-yon.notion.site/TIL-24-8b6825a2cd1f42268e2955fd8645bdca?pvs=4) </span>
 
-🗒️ [***채널 API 설계 노션 기록***](https://jae-yon.notion.site/TIL-20-47839d4caa0a4579919dfd3b58b83811?pvs=4)
+### 🗂️ 추가&수정 파일 항목
 
-#### 🗂️ 추가&수정 파일 항목
+##### <span style="background-color:#FFE6E6"> _npm_ </span> ➡️ ***mysql2 & express-validator***
+
 ```
-│  app.js // test 라우터 연결
-│
-├─public
-│  └─json
-│        channel.json // 채널 API 테스트 데이터
-│        fruits.json // 조회 데이터 테스트 파일
-│        test.json // 등록, 수정, 삭제 데이터 테스트 파일
-└─routes
-        channels.js // 채널 라우터
-        users.js // 유저 라우터
+├─ app.js
+├─ db.js        
+└─ routes
+    ├─ channels.js
+    └─ users.js
 ```
 
-#### 📝 _app.js_
-* * *
+#### 💾 _db.js_
+
 ```js
-  /* router */
-  var indexRouter = require('./routes/index');
-  var usersRouter = require('./routes/users');
-  var channelsRouter = require('./routes/channels');
+  // Get the client
+  const mysql = require('mysql2');
 
-  app.use('/', indexRouter);
-  app.use('/users', usersRouter);
-  app.use('/channels', channelsRouter);
-```
-#### 📝 _channels.js_
-* * *
-- _**channels.json**_ 파일을 읽어서 맵 객체에 담아오는 코드
-```js
-  // JSON 파일 읽어오기
-  const fs = require('fs');
-  const jsonFile = fs.readFileSync('./public/json/channels.json', 'utf8');
-  const jsonData = JSON.parse(jsonFile);
-
-  // let channels = new Map(Object.entries(jsonData)); => key 값을 string으로 가지고 온다
-  
-  let channels = new Map();
-  
-  // JSON 데이터 MAP 객체에 담기
-  jsonData.forEach((e) => {
-    channels.set(e.id, e)
+  // Create the connection to database
+  const connection = mysql.createConnection({
+    host: 'localhost',
+    port: 3306,
+    user: 'root',
+    password: 'root',
+    database: 'Youtube',
+    timezone: '+09:00',
+    dateStrings: true
   });
+
+  module.exports = connection;
 ```
-- (등록, 수정, 삭제된)객체를 _**channels.json**_ 파일에 저장하는 코드
+#### 📑 _라우트(users, channels) 공통 변경 사항_
+
 ```js
-  let saveChannel = () => {
-    fs.writeFileSync('./public/json/channels.json', JSON.stringify([...channels.values()], null, 2));
+  const connection = require('../db');
+  const {body, param, validationResult} = require('express-validator');
+```
+- 요청 결과 실패시 호출 함수
+```js
+  const notFound = (res) => {
+    res.status(404).json({
+      message : `일치하는 정보를 찾을 수 없습니다`
+    })
   }
 ```
-- 조회, 수정 시에 원하는 객체 값을 찾는 코드
+- 유효성 검증 실패시 미들웨어 함수
 ```js
-  let findChannel = (id) => {
-    return [...channels.values()].find((e) => e.id === id)
+  const validate = (req, res, next) => {
+    const err = validationResult(req)
+    if (!err.isEmpty()) {
+      return res.status(400).json({message : err.array()})
+    } else {
+      return next()
+    }
   }
+```
+- HTTP 메소드 형태 변경 (예시: GET 요청)
+```js
+  router.get('/',
+    // validator
+    [
+      body('value').notEmpty(), validate
+    ],
+    // middleware function
+    (req, res) => {
+      // request value
+      const {value} = req.body
+      // sql query
+      const sql = `SELECT * FROM table WHERE value = ?`
+      // db connect
+      connection.query(sql, value, function (err, results) {
+        if (results.length) {
+          res.status(200).json(results[0])
+        } else {
+          return notFound(res)
+        }
+      })
+    }
+  )
 ```

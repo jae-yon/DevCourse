@@ -10,9 +10,13 @@ const notFound = (res) => {
   })
 }
 
-const validate = (req, res) => {
+const validate = (req, res, next) => {
   const err = validationResult(req)
-  if (!err.isEmpty()) return res.status(400).json({message : err.array()})
+  if (!err.isEmpty()) {
+    return res.status(400).json({message : err.array()})
+  } else {
+    return next()
+  }
 }
 
 router
