@@ -4,10 +4,8 @@ var router = express.Router();
 var connection = require('../db');
 
 var jwt = require('jsonwebtoken');
-// create token
-var token = jwt.sign({ name: 'minsukim', location: 'seoul' }, 'mysecretkey');
-
-console.log(token);
+var dotenv = require('dotenv');
+dotenv.config();
 
 var {body, param, validationResult} = require('express-validator');
 
@@ -77,6 +75,42 @@ router
       connection.query(sql, [email, name, password, contact], function (err, results) {
         if (err) return res.status(400).send(err)
         res.status(201).json([ results, { msg : `success` } ])
+      })
+    }
+  )
+
+  .post('/signin',
+    [
+      body('email').notEmpty().isString().withMessage('이메일 정보가 없습니다'),
+      body('password').notEmpty().isString().withMessage('패스워드 정보가 없습니다'),
+      validate
+    ],
+    (req, res) => {
+      const {email, password} = req.body
+      const sql = `SELECT * FROM users WHERE email = ?`
+
+      connection.query(sql, email, function (err, results) {
+        if (err) return res.status(400).send(err)
+
+        if (results[0] && results[0].password == password) {
+          // create token
+          const token = jwt.sign(
+            { email: results[0].email, name: results[0].name }, 
+            process.env.SECRET_KEY,
+            { expiresIn : '30m', issuer: 'admin' }
+          );
+
+          res.cookie('token', token, { httpOnly : true })
+
+          res.status(200).json({
+            message : `${results[0].name}님 환영합니다`,
+            token : token
+          })
+        } else {
+          res.status(403).json({
+            message : `이메일 또는 패스워드가 일치하지 않습니다`
+          })
+        }
       })
     }
   )
