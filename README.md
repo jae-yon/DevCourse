@@ -1,4 +1,4 @@
-## 🤖Node.JS + Express 기능 구현 테스트 (유튜브 클론 코딩)
+## 🤖Node.JS + Express 기능 구현 테스트
 <img src="https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E"><img src="https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white"><img src="https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB">
 
 🗒️ <span style="background-color:#fff5b1"> [***DB 설계 노션 기록***](https://jae-yon.notion.site/TIL-24-8b6825a2cd1f42268e2955fd8645bdca?pvs=4) </span>
@@ -56,7 +56,7 @@
   module.exports = connection;
 ```
 
-#### 🪙 JWT 생성 (users.js)
+#### 🪙 _JWT 생성 (users.js)_
 - _jwt, env_ 모듈 추가
 ```js
   var jwt = require('jsonwebtoken');
@@ -79,7 +79,7 @@
         if (err) return res.status(400).send(err)
 
         if (results[0] && results[0].password == password) {
-          // create token
+          
           const token = jwt.sign(
             { email: results[0].email, name: results[0].name }, 
             process.env.SECRET_KEY,
