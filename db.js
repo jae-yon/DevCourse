@@ -1,13 +1,15 @@
 // Get the client
-const mysql = require('mysql2');
+var mysql = require('mysql2');
+var dotenv = require('dotenv');
+dotenv.config();
 
 // Create the connection to database
 const connection = mysql.createConnection({
-  host: 'localhost',
-  port: 3306,
-  user: 'root',
-  password: 'root',
-  database: 'Youtube',
+  host: process.env.HOST,
+  port: process.env.DB_PORT,
+  user: process.env.USER,
+  password: process.env.PASSWORD,
+  database: process.env.DB,
   timezone: '+09:00',
   dateStrings: true
 });
